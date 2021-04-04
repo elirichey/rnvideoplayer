@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import {
-  AlertIOS,
+  Alert,
   Platform,
   StyleSheet,
   Text,
@@ -33,52 +33,50 @@ const filterTypes = [
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props);
-    this.onLoad = this.onLoad.bind(this);
-    this.onProgress = this.onProgress.bind(this);
-    this.onBuffer = this.onBuffer.bind(this);
-  }
-  state = {
-    rate: 1,
-    volume: 1,
-    muted: false,
-    resizeMode: 'contain',
-    duration: 0.0,
-    currentTime: 0.0,
-    controls: false,
-    paused: true,
-    skin: 'custom',
-    ignoreSilentSwitch: null,
-    mixWithOthers: null,
-    isBuffering: false,
-    filter: FilterType.NONE,
-    filterEnabled: true,
-  };
 
-  onLoad(data) {
+    this.state = {
+      rate: 1,
+      volume: 1,
+      muted: false,
+      resizeMode: 'contain',
+      duration: 0.0,
+      currentTime: 0.0,
+      controls: false,
+      paused: true,
+      skin: 'custom',
+      ignoreSilentSwitch: null,
+      mixWithOthers: null,
+      isBuffering: false,
+      filter: FilterType.NONE,
+      filterEnabled: true,
+    };
+  }
+
+  onLoad = data => {
     console.log('On load fired!');
     this.setState({duration: data.duration});
-  }
+  };
 
-  onProgress(data) {
+  onProgress = data => {
     this.setState({currentTime: data.currentTime});
-  }
+  };
 
-  onBuffer({isBuffering}) {
+  onBuffer = ({isBuffering}) => {
     this.setState({isBuffering});
-  }
+  };
 
   getCurrentTimePercentage() {
-    if (this.state.currentTime > 0) {
-      return (
-        parseFloat(this.state.currentTime) / parseFloat(this.state.duration)
-      );
+    let {currentTime, duration} = this.state;
+    if (currentTime > 0) {
+      return parseFloat(currentTime) / parseFloat(duration);
     } else {
       return 0;
     }
   }
 
-  setFilter(step) {
-    let index = filterTypes.indexOf(this.state.filter) + step;
+  setFilter = step => {
+    let {filter} = this.state;
+    let index = filterTypes.indexOf(filter) + step;
 
     if (index === filterTypes.length) {
       index = 0;
@@ -89,9 +87,9 @@ export default class VideoPlayer extends Component {
     this.setState({
       filter: filterTypes[index],
     });
-  }
+  };
 
-  renderSkinControl(skin) {
+  renderPlayerSkin(skin) {
     let isSelected = this.state.skin == skin;
     let selectControls = skin == 'native' || skin == 'embed';
 
@@ -210,6 +208,18 @@ export default class VideoPlayer extends Component {
   }
 
   renderCustomSkin() {
+    let {
+      filterEnabled,
+      rate,
+      paused,
+      volume,
+      muted,
+      ignoreSilentSwitch,
+      mixWithOthers,
+      resizeMode,
+      filter,
+    } = this.state;
+
     let flexCompleted = this.getCurrentTimePercentage() * 100;
     let flexRemaining = (1 - this.getCurrentTimePercentage()) * 100;
 
@@ -218,38 +228,39 @@ export default class VideoPlayer extends Component {
         <TouchableOpacity
           style={styles.fullScreen}
           onPress={() => {
-            this.setState({paused: !this.state.paused});
+            this.setState({paused: !paused});
           }}>
           <Video
             source={require('./assets/video/maggie.mp4')}
             style={styles.fullScreen}
-            rate={this.state.rate}
-            paused={this.state.paused}
-            volume={this.state.volume}
-            muted={this.state.muted}
-            ignoreSilentSwitch={this.state.ignoreSilentSwitch}
-            mixWithOthers={this.state.mixWithOthers}
-            resizeMode={this.state.resizeMode}
+            rate={rate}
+            paused={paused}
+            volume={volume}
+            muted={muted}
+            ignoreSilentSwitch={ignoreSilentSwitch}
+            mixWithOthers={mixWithOthers}
+            resizeMode={resizeMode}
             onLoad={this.onLoad}
             onBuffer={this.onBuffer}
             onProgress={this.onProgress}
             onEnd={() => {
-              AlertIOS.alert('Done!');
+              Alert.alert('Done!');
             }}
             repeat={true}
-            filter={this.state.filter}
-            filterEnabled={this.state.filterEnabled}
+            filter={filter}
+            filterEnabled={filterEnabled}
           />
         </TouchableOpacity>
 
         <View style={styles.controls}>
           <View style={styles.generalControls}>
             <View style={styles.skinControl}>
-              {this.renderSkinControl('custom')}
-              {this.renderSkinControl('native')}
-              {this.renderSkinControl('embed')}
+              {this.renderPlayerSkin('custom')}
+              {this.renderPlayerSkin('native')}
+              {this.renderPlayerSkin('embed')}
             </View>
-            {this.state.filterEnabled ? (
+
+            {filterEnabled ? (
               <View style={styles.skinControl}>
                 <TouchableOpacity
                   onPress={() => {
@@ -316,10 +327,22 @@ export default class VideoPlayer extends Component {
   }
 
   renderNativeSkin() {
+    let {
+      skin,
+      filterEnabled,
+      rate,
+      paused,
+      volume,
+      muted,
+      ignoreSilentSwitch,
+      mixWithOthers,
+      resizeMode,
+      controls,
+      filter,
+    } = this.state;
+
     let videoStyle =
-      this.state.skin == 'embed'
-        ? styles.nativeVideoControls
-        : styles.fullScreen;
+      skin == 'embed' ? styles.nativeVideoControls : styles.fullScreen;
 
     return (
       <View style={styles.container}>
@@ -327,33 +350,33 @@ export default class VideoPlayer extends Component {
           <Video
             source={require('./assets/video/maggie.mp4')}
             style={videoStyle}
-            rate={this.state.rate}
-            paused={this.state.paused}
-            volume={this.state.volume}
-            muted={this.state.muted}
-            ignoreSilentSwitch={this.state.ignoreSilentSwitch}
-            mixWithOthers={this.state.mixWithOthers}
-            resizeMode={this.state.resizeMode}
+            rate={rate}
+            paused={paused}
+            volume={volume}
+            muted={muted}
+            ignoreSilentSwitch={ignoreSilentSwitch}
+            mixWithOthers={mixWithOthers}
+            resizeMode={resizeMode}
             onLoad={this.onLoad}
             onBuffer={this.onBuffer}
             onProgress={this.onProgress}
             onEnd={() => {
-              AlertIOS.alert('Done!');
+              Alert.alert('Done!');
             }}
             repeat={true}
-            controls={this.state.controls}
-            filter={this.state.filter}
-            filterEnabled={this.state.filterEnabled}
+            controls={controls}
+            filter={filter}
+            filterEnabled={filterEnabled}
           />
         </View>
         <View style={styles.controls}>
           <View style={styles.generalControls}>
             <View style={styles.skinControl}>
-              {this.renderSkinControl('custom')}
-              {this.renderSkinControl('native')}
-              {this.renderSkinControl('embed')}
+              {this.renderPlayerSkin('custom')}
+              {this.renderPlayerSkin('native')}
+              {this.renderPlayerSkin('embed')}
             </View>
-            {this.state.filterEnabled ? (
+            {filterEnabled ? (
               <View style={styles.skinControl}>
                 <TouchableOpacity
                   onPress={() => {
@@ -409,9 +432,8 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    return this.state.controls
-      ? this.renderNativeSkin()
-      : this.renderCustomSkin();
+    let {controls} = this.state;
+    return controls ? this.renderNativeSkin() : this.renderCustomSkin();
   }
 }
 
