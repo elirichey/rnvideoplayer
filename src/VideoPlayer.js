@@ -30,7 +30,7 @@ const filterTypes = [
   FilterType.SEPIA,
 ];
 
-class VideoPlayer extends Component {
+export default class VideoPlayer extends Component {
   constructor(props) {
     super(props);
     this.onLoad = this.onLoad.bind(this);

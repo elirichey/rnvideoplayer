@@ -1,13 +1,20 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {StyleSheet, StatusBar, View} from 'react-native';
 import VideoPlayer from './VideoPlayer';
 
 export default function App(props) {
   return (
-    <SafeAreaView>
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
       <VideoPlayer />
-    </SafeAreaView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#000000',
+  },
+});
