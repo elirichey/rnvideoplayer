@@ -5,30 +5,12 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import Video, {FilterType} from 'react-native-video';
-
-const filterTypes = [
-  FilterType.NONE,
-  FilterType.INVERT,
-  FilterType.MONOCHROME,
-  FilterType.POSTERIZE,
-  FilterType.FALSE,
-  FilterType.MAXIMUMCOMPONENT,
-  FilterType.MINIMUMCOMPONENT,
-  FilterType.CHROME,
-  FilterType.FADE,
-  FilterType.INSTANT,
-  FilterType.MONO,
-  FilterType.NOIR,
-  FilterType.PROCESS,
-  FilterType.TONAL,
-  FilterType.TRANSFER,
-  FilterType.SEPIA,
-];
 
 export default class VideoPlayer extends Component {
   constructor(props) {
@@ -76,6 +58,26 @@ export default class VideoPlayer extends Component {
 
   setFilter = step => {
     let {filter} = this.state;
+
+    let filterTypes = [
+      FilterType.NONE,
+      FilterType.INVERT,
+      FilterType.MONOCHROME,
+      FilterType.POSTERIZE,
+      FilterType.FALSE,
+      FilterType.MAXIMUMCOMPONENT,
+      FilterType.MINIMUMCOMPONENT,
+      FilterType.CHROME,
+      FilterType.FADE,
+      FilterType.INSTANT,
+      FilterType.MONO,
+      FilterType.NOIR,
+      FilterType.PROCESS,
+      FilterType.TONAL,
+      FilterType.TRANSFER,
+      FilterType.SEPIA,
+    ];
+
     let index = filterTypes.indexOf(filter) + step;
 
     if (index === filterTypes.length) {
@@ -225,7 +227,7 @@ export default class VideoPlayer extends Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity
+        <TouchableWithoutFeedback
           style={styles.fullScreen}
           onPress={() => {
             this.setState({paused: !paused});
@@ -250,15 +252,15 @@ export default class VideoPlayer extends Component {
             filter={filter}
             filterEnabled={filterEnabled}
           />
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
 
         <View style={styles.controls}>
           <View style={styles.generalControls}>
-            <View style={styles.skinControl}>
+            {/* <View style={styles.skinControl}>
               {this.renderPlayerSkin('custom')}
               {this.renderPlayerSkin('native')}
               {this.renderPlayerSkin('embed')}
-            </View>
+            </View> */}
 
             {filterEnabled ? (
               <View style={styles.skinControl}>
@@ -277,18 +279,19 @@ export default class VideoPlayer extends Component {
               </View>
             ) : null}
           </View>
+
           <View style={styles.generalControls}>
-            <View style={styles.rateControl}>
+            {/* <View style={styles.rateControl}>
               {this.renderRateControl(0.5)}
               {this.renderRateControl(1.0)}
               {this.renderRateControl(2.0)}
             </View>
-
+            
             <View style={styles.volumeControl}>
               {this.renderVolumeControl(0.5)}
               {this.renderVolumeControl(1)}
               {this.renderVolumeControl(1.5)}
-            </View>
+            </View> */}
 
             <View style={styles.resizeModeControl}>
               {this.renderResizeModeControl('cover')}
@@ -296,7 +299,8 @@ export default class VideoPlayer extends Component {
               {this.renderResizeModeControl('stretch')}
             </View>
           </View>
-          <View style={styles.generalControls}>
+
+          {/* <View style={styles.generalControls}>
             {Platform.OS === 'ios' ? (
               <>
                 <View style={styles.ignoreSilentSwitchControl}>
@@ -309,7 +313,7 @@ export default class VideoPlayer extends Component {
                 </View>
               </>
             ) : null}
-          </View>
+          </View> */}
 
           <View style={styles.trackingControls}>
             <View style={styles.progress}>
@@ -376,6 +380,7 @@ export default class VideoPlayer extends Component {
               {this.renderPlayerSkin('native')}
               {this.renderPlayerSkin('embed')}
             </View>
+
             {filterEnabled ? (
               <View style={styles.skinControl}>
                 <TouchableOpacity
@@ -393,6 +398,7 @@ export default class VideoPlayer extends Component {
               </View>
             ) : null}
           </View>
+
           <View style={styles.generalControls}>
             <View style={styles.rateControl}>
               {this.renderRateControl(0.5)}
@@ -412,6 +418,7 @@ export default class VideoPlayer extends Component {
               {this.renderResizeModeControl('stretch')}
             </View>
           </View>
+
           <View style={styles.generalControls}>
             {Platform.OS === 'ios' ? (
               <>
